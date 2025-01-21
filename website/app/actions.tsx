@@ -63,7 +63,6 @@ export async function createSession(values: FormValues) {
         'session': values.session
     };
 
-    console.log(qrData);
     const qrCode = await QRCode.toDataURL(JSON.stringify(qrData));
 
     return qrCode;

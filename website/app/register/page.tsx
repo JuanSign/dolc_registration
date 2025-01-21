@@ -66,8 +66,8 @@ export default function RegisterForm() {
       const firstPage = pages[0];
 
       firstPage.drawImage(qrCodeImage, {
-        x: (firstPage.getWidth() - qrCodeDims.width) / 2 - qrCodeDims.width * 3 + 50,
-        y: (firstPage.getHeight() - qrCodeDims.height) / 2 - qrCodeDims.height * 3 + 65,
+        x: (firstPage.getWidth() - qrCodeDims.width * 6) / 2,
+        y: (firstPage.getHeight() - qrCodeDims.height * 6) / 2,
         width: qrCodeDims.width * 6,
         height: qrCodeDims.height * 6,
       });
