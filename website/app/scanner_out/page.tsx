@@ -1,13 +1,19 @@
 'use client';
-import React, { act, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BrowserMultiFormatReader } from "@zxing/library";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { deleteActive, getActive, getSession, insertActive } from "../actions";
+import { deleteActive, getActive } from "../actions";
 
 const QRCodeScanner = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const [isScanning, setIsScanning] = useState(true);
+    const [selectedSession, setSelectedSession] = useState("");
+
+    const handleSessionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        setSelectedSession(event.target.value);
+    };
+
 
     async function scan(scanner: BrowserMultiFormatReader) {
         try {
@@ -26,31 +32,39 @@ const QRCodeScanner = () => {
                                 });
                             }
                             else {
-                                const active = await getActive(qrData.id, qrData.session);
-                                if (typeof active === "string") {
-                                    toast.error(`${active.split(/\s*:\s*/)[1]}`, {
+                                if (qrData.session != selectedSession) {
+                                    toast.error("Wrong session!", {
                                         position: "top-center",
                                         onClose: () => setIsScanning(true)
                                     });
-                                } else {
-                                    if (active.length == 0) {
-                                        toast.error("User are not checked-in in this session", {
+                                }
+                                else {
+                                    const active = await getActive(qrData.id, qrData.session);
+                                    if (typeof active === "string") {
+                                        toast.error(`${active.split(/\s*:\s*/)[1]}`, {
                                             position: "top-center",
                                             onClose: () => setIsScanning(true)
                                         });
-                                    }
-                                    else {
-                                        const deletion = await deleteActive(qrData.id, qrData.session);
-                                        if (typeof deletion === "string") {
-                                            toast.error(`${deletion.split(/\s*:\s*/)[1]}`, {
+                                    } else {
+                                        if (active.length == 0) {
+                                            toast.error("User are not checked-in in this session", {
                                                 position: "top-center",
                                                 onClose: () => setIsScanning(true)
                                             });
-                                        } else {
-                                            toast.success(`Logged out!`, {
-                                                position: "top-center",
-                                                onClose: () => setIsScanning(true)
-                                            });
+                                        }
+                                        else {
+                                            const deletion = await deleteActive(qrData.id, qrData.session);
+                                            if (typeof deletion === "string") {
+                                                toast.error(`${deletion.split(/\s*:\s*/)[1]}`, {
+                                                    position: "top-center",
+                                                    onClose: () => setIsScanning(true)
+                                                });
+                                            } else {
+                                                toast.success(`Logged out!`, {
+                                                    position: "top-center",
+                                                    onClose: () => setIsScanning(true)
+                                                });
+                                            }
                                         }
                                     }
                                 }
@@ -93,11 +107,31 @@ const QRCodeScanner = () => {
             height: '100vh',
             textAlign: 'center'
         }}>
+            {/* Dropdown Menu */}
+            <select
+                value={selectedSession}
+                onChange={handleSessionChange}
+                style={{
+                    marginBottom: '20px',
+                    padding: '10px',
+                    fontSize: '16px',
+                    borderRadius: '5px',
+                    border: '1px solid #ccc',
+                }}
+            >
+                <option value="" disabled hidden>Select a Session</option>
+                <option value="Friday, January 24th, 2025">Friday, January 24th, 2025</option>
+                <option value="Saturday, January 25th, 2025">Saturday, January 25th, 2025</option>
+                <option value="Sunday, January 26th, 2025">Sunday, January 26th, 2025</option>
+            </select>
+
+            {/* Video Feed */}
             <video ref={videoRef} style={{ width: "100%", maxHeight: "400px" }} />
+
             <ToastContainer />
+
             {!isScanning && <div style={{ fontSize: '24px', fontWeight: 'bold' }}>LOADING</div>}
         </div>
-
     );
 };
 

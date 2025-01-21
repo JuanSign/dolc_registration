@@ -265,6 +265,13 @@ export default function RegisterForm() {
         </Card>
       </div>
 
+      <div className="text-center text-white px-4 mt-4 mb-4" style={{ fontFamily: 'Times New Roman, serif' }}>
+        <p>1. One email can be used for three different sessions (cannot be used to register the same session more than once).</p>
+        <p>2. QR Code given is only valid for the selected day.</p>
+        <p>3. Save the QR Code and show it during registration for the selected date to check in.</p>
+        <p>4. Show the QR Code before exiting the venue to check out.</p>
+      </div>
+
       <div className="w-full">
         <img
           src={isMobile ? "/img/footer/footer_mobile.png" : "/img/footer/footer_web.png"}
