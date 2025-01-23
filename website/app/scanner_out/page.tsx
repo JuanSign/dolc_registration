@@ -96,7 +96,7 @@ const QRCodeScanner = () => {
             scanner.reset();
         };
 
-    }, [isScanning]);
+    }, [isScanning, selectedSession]);
 
     return (
         <div style={{

@@ -31,6 +31,7 @@ const QRCodeScanner = () => {
                                 });
                             }
                             else {
+                                console.log(selectedSession);
                                 if (qrData.session != selectedSession) {
                                     toast.error("Wrong session!", {
                                         position: "top-center",
@@ -86,7 +87,7 @@ const QRCodeScanner = () => {
             scanner.reset();
         };
 
-    }, [isScanning]);
+    }, [isScanning, selectedSession]);
 
     return (
         <div style={{
