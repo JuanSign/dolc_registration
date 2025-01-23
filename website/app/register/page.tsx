@@ -77,7 +77,14 @@ export default function RegisterForm() {
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       link.download = `${values.fullname}-${values.session}-ticket.pdf`;
+
       link.click();
+
+      const newTab = window.open();
+      if (newTab) {
+        const objectURL = URL.createObjectURL(blob);
+        newTab.location.href = objectURL;
+      }
 
       toast.success("Registration successful! Ticket generated.", {
         position: "top-center",
@@ -86,6 +93,7 @@ export default function RegisterForm() {
       handleErrorMessage(error);
     }
   }, [form]);
+
 
   useEffect(() => {
     const handleResize = () => {
