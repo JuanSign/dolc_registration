@@ -68,6 +68,46 @@ export async function createSession(values: FormValues) {
     return qrCode;
 }
 
+export async function displaySession(email: String, session: String) {
+    const psql = neon(process.env.DATABASE_URL || "");
+
+    let result;
+    try {
+        result = await psql`
+    SELECT id
+    FROM users 
+    WHERE email = ${email} 
+    LIMIT 1
+    `;
+    } catch {
+        return "ERROR : Failed to fetch data from database.";
+    }
+
+    if (result.length == 0) return "ERROR : User are not registered.";
+    else {
+        let sessionResult;
+        try {
+            sessionResult = await psql`
+        SELECT 1 
+        FROM users_sessions 
+        WHERE user_id = ${result[0].id} AND session = ${session} 
+        LIMIT 1
+        `;
+        } catch { return "ERROR : Failed to fetch session from database"; }
+        if (sessionResult.length == 0) return "ERROR : User are not registered in this sessions.";
+        else {
+            const qrData = {
+                'id': result[0].id,
+                'session': session
+            };
+
+            const qrCode = await QRCode.toDataURL(JSON.stringify(qrData));
+
+            return qrCode;
+        }
+    }
+}
+
 export async function getActive(id: string, session: string) {
     try {
         const psql = neon(process.env.DATABASE_URL || "");
